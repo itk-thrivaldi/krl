@@ -1,0 +1,53 @@
+&ACCESS RVP1
+&REL 8
+&PARAM TEMPLATE = C:\KRC\Roboter\Template\ExpertVorgabe
+&PARAM EDITMASK = *
+DEF updatetoolforces()
+;Subroutine that updates the forces and torques measured in the tool interface
+
+;Output byte
+SIGNAL FtrOut $OUT[401] TO $OUT[408]
+
+;Input bytes
+SIGNAL FtrIn $IN[401] TO $IN[408]
+
+SIGNAL FtrFx $IN[409] TO $IN[424]
+SIGNAL FtrFy $IN[425] TO $IN[440]
+SIGNAL FtrFz $IN[441] TO $IN[456]
+
+SIGNAL FtrMx $IN[457] TO $IN[472]
+SIGNAL FtrMy $IN[473] TO $IN[488]
+SIGNAL FtrMz $IN[489] TO $IN[504]
+
+;The sensor sends continuous measurements by writing 'H4C' once. However, this is done every time for simplicity
+FtrOut = 'H4C'
+
+;Returns if the ack byte is not as expected
+if FtrIn <> 'H4D'THEN
+  RETURN
+ENDIF
+
+;Get the returned forces and torques
+FTC.Fx = ConvS16bitsToS32bits(FtrFx) / 1024.0
+FTC.Fy = ConvS16bitsToS32bits(FtrFy) / 1024.0
+FTC.Fz = ConvS16bitsToS32bits(FtrFz) / 1024.0
+
+FTC.Mx = ConvS16bitsToS32bits(FtrMx) / 32.0
+FTC.My = ConvS16bitsToS32bits(FtrMy) / 32.0
+FTC.Mz = ConvS16bitsToS32bits(FtrMz) / 32.0
+
+END
+
+
+DEFFCT INT ConvS16bitsToS32Bits(value:IN)
+;Subroutine for converting an INT16 value to INT32
+
+INT value
+
+IF value > 32767 THEN
+  value = value - 65536
+ENDIF
+
+RETURN (value)
+
+ENDFCT
