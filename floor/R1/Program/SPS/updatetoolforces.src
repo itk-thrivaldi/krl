@@ -1,5 +1,5 @@
 &ACCESS RVP1
-&REL 8
+&REL 9
 &PARAM TEMPLATE = C:\KRC\Roboter\Template\ExpertVorgabe
 &PARAM EDITMASK = *
 DEF updatetoolforces()
@@ -35,6 +35,13 @@ FTC.Fz = ConvS16bitsToS32bits(FtrFz) / 1024.0
 FTC.Mx = ConvS16bitsToS32bits(FtrMx) / 32.0
 FTC.My = ConvS16bitsToS32bits(FtrMy) / 32.0
 FTC.Mz = ConvS16bitsToS32bits(FtrMz) / 32.0
+
+$SEN_PREA[1] = FTC.Fx
+$SEN_PREA[2] = FTC.Fy
+$SEN_PREA[3] = FTC.Fz
+$SEN_PREA[4] = FTC.Mx
+$SEN_PREA[5] = FTC.My
+$SEN_PREA[6] = FTC.Mz
 
 END
 

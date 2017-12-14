@@ -48,7 +48,7 @@ DEF ros_rsi_tcp( )
   REAL lowerBound[15], upperBound[15]                ;Bounds for motion control
   INT i                                      ;Counter variable used in for-loops
   DECL AXIS HOME                             ; HOME position
-  INT containerID, hEthernet, hAxis, hPath, numAxes ;Container IDs
+  INT containerID, hEthernet, hAxis, hPath, numAxes, hPrea[6]  ;Container IDs
 ; ENDFOLD VAR DECLARATION
 
 ;FOLD INI
@@ -135,6 +135,23 @@ for i=14 TO numAxes+13
 ENDFOR
 
 ;ENDFOLD AXISCORR
+
+; FTC output
+FOR i=1 TO 6
+  err = ST_SEN_PREA(hPrea[i],containerID,i,0)
+  IF err<>#RSIOK  THEN
+    ;RSIXML error!
+    HALT
+  ENDIF
+ENDFOR
+
+FOR i=1 TO 6
+  err = ST_NEWLINK(hPrea[i], 1, hEthernet, i)
+  IF err<>#RSIOK  THEN
+    ;RSIXML error!
+    HALT
+  ENDIF
+ENDFOR
 
 
 
